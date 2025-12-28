@@ -33,8 +33,9 @@ is_excluded() {
   return 1
 }
 
-# Maps sink IDs to their human-readable names
+# Stores all the sinks
 declare -A sinks
+
 # Stores the currently active default sink ID
 default_sink=""
 
