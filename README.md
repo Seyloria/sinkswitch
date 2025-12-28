@@ -1,11 +1,11 @@
-# sinkswitch for Hyprland and others scratchpad users
+# sinkswitch for Hyprland (and others scratchpad users)
 ![Showcase](/example.jpg)
 
-## Description
-The tool shows a little menu to switch between your pipewire audio outputs(sinks). It was written with Hyprland and it's specialworkplaces (aka scratchpad's) in mind, but should be useable with any other compositor that got a scratchpad feature like Sway etc.
+## :beginner: Description
+The tool shows a little menu to switch between your pipewire audio outputs(sinks). It was written with Hyprland and it's [Special Workspace's (aka scratchpad's)](https://wiki.hypr.land/Configuring/Dispatchers/#special-workspace) in mind, but should be useable with any other compositor that got a scratchpad feature too(like Sway etc.).
 <br/>
 
-## Dependencies
+## :dna: Dependencies
 Using [Hyprland](https://hypr.land/): As most modern distro's already use pipewire & wireplumber as their audio backend/frontend, the only thing you might need to install as dependency is [fzf](https://github.com/junegunn/fzf).
 
 ### List of dependencies
@@ -13,11 +13,12 @@ Using [Hyprland](https://hypr.land/): As most modern distro's already use pipewi
 - **pipewire:** The core audio system on most modern distro's
 - **wireplumber:** The default pipewire session manager most modern distro's use
 - **wpctl:** CLI tool that let's you work with wireplumber, comes with wireplumber by default
-- **[fzf](https://github.com/junegunn/fzf):** The tool used to dislpay the fancy menu. Can be found in nearly every modern distro's package manager
+- **terminal:** I use kitty, but any should work, just use what you already have
+- **[fzf](https://github.com/junegunn/fzf):** The tool used to dislpay the fancy menu. Can be found in nearly every modern distro's package repository and manager
 <br/>
 
 ## :floppy_disk: Installation
-Open a terminal and navigate to where you want to store the script files(Example: **`~/scripts/`** =  your home directory would be suitable).
+Open a terminal and navigate to where you want to store the script (Example: **`~/scripts/`** =  somewhere inside your home directory would be suitable).
 Then use curl **or** wget to download the script:
 ```sh
 curl -O  https://raw.githubusercontent.com/Seyloria/sinkswitch/main/sinkswitch.sh
@@ -25,25 +26,22 @@ curl -O  https://raw.githubusercontent.com/Seyloria/sinkswitch/main/sinkswitch.s
 ```sh
 wget https://raw.githubusercontent.com/Seyloria/sinkswitch/main/sinkswitch.sh
 ```
-
-
-
-## Make the script executable
+### Make the script executable
 ```sh
 chmod +x sinkswitch.sh
 ```
 <br/>
 
-## Scratchpad Config
+## :link: Scratchpad Config
 
 ### Hyprland Keybinding
-If you want to use a keybinding to call and open the menu use something like this. Tweak the **move** coordinates and **size* of the displayed scratchpad to fit your needs.
-This example uses some extra macro keys my keyboard has and uses my 3440x1440px monitor.
+If you want to use a keybinding to call and open the menu use something like the following. Tweak the **move** coordinates and **size** of the displayed scratchpad to fit your needs.
+This example uses a extra macro key my keyboard has and uses my 3440x1440px monitor.
 ```sh
 bind = , XF86Tools, exec, [workspace special:kitty-sinkswitch; monitor DP-1; float; move 2936 64; size 480 160] kitty --class kitty-scratch -e ~/scripts/sinkswitch.sh -exclude 46
 ```
 ### Waybar Integration
-If you want to use a button on your waybar(e.g. from your volume control), this can easily done by linking the script and execting it with hyprctl dispatch.
+If you want to use a button on your waybar(e.g. from your volume control), this can easily done by linking the script and executing it with **`hyprctl dispatch`**.
 
 Example:
 ```sh
@@ -51,7 +49,6 @@ Example:
         "format": "{icon} {volume}%",
         "tooltip": false,
         "format-muted": " Muted",
-        // "on-click": "~/.config/waybar/scripts/audio_changer.py",
         "on-click": "hyprctl dispatch exec \"[workspace special:kitty-sinkswitch; monitor DP-1; float; move 2916 64; size 500 180] kitty --class kitty-scratch -e ~/scripts/sinkswitch.sh -exclude 46\"",
         "on-scroll-up": "pamixer -i 5",
         "on-scroll-down": "pamixer -d 5",
@@ -63,7 +60,7 @@ Example:
         },
 ```
 
-## Exclude/Hide certain outputs(sinks)
+## :no_entry_sign: Exclude/Hide certain outputs(sinks)
 If you want to hide one or more outputs(sinks) from your menu you can do so by calling the script with the **`-exclude 46,67,63`** flag followed by a comma seperated list of sink id's to hide.
 Show all sinks and their id's:
 ```sh
@@ -143,6 +140,10 @@ You can get the **`node.name`** and current **`node.description`** with
 ```sh
 pw-cli list-objects Node
 ```
+## :scroll: Changelog and current state (yyyy-mm-dd)
 
-## Version
-- **v1.0:** Stable and totally fine
+- [x] 2025-12-28 | v1.0 | Upload the script and create a suitable README
+
+### :cyclone: Disclamer
+
+> **This is a private project and i am not a developer. I am only sharing this because it might help others. If you want to fork it, go ahead! If you find any errors or got suggestions, please let me know!**
