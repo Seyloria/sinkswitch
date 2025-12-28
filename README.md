@@ -2,7 +2,7 @@
 ![Showcase](/example.jpg)
 
 ## :beginner: Description
-The tool shows a little menu to switch between your pipewire audio outputs(sinks). It was written with Hyprland and it's [Special Workspace's (aka scratchpad's)](https://wiki.hypr.land/Configuring/Dispatchers/#special-workspace) in mind, but should be usable with any other compositor that got a scratchpad feature too(like Sway etc.).
+The tool shows a little menu to switch between your pipewire audio outputs(sinks). It was written with Hyprland and it's [Special Workspace's (aka scratchpad's)](https://wiki.hypr.land/Configuring/Dispatchers/#special-workspace) in mind, but should be usable with any other compositor that got a scratchpad feature too like Sway etc., or even just from your terminal if you wish to.
 <br/>
 
 ## :dna: Dependencies
