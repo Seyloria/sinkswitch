@@ -35,7 +35,7 @@ chmod +x sinkswitch.sh
 ## :link: Scratchpad Config
 
 ### Hyprland Keybinding
-If you want to use a keybinding to call and open the menu use something like the following. Tweak the **move** coordinates and **size** of the displayed scratchpad to fit your needs.
+If you want to use a keybinding to call and open the menu use something like the following in your **`hyprland.conf`**. Tweak the **move** coordinates and **size** of the displayed scratchpad to fit your needs.
 This example uses a extra macro key my keyboard has and uses my 3440x1440px monitor.
 ```sh
 bind = , XF86Tools, exec, [workspace special:kitty-sinkswitch; monitor DP-1; float; move 2936 64; size 480 160] kitty --class kitty-scratch -e ~/scripts/sinkswitch.sh -exclude 46
@@ -61,7 +61,7 @@ Example:
 ```
 
 ## :no_entry_sign: Exclude/Hide certain outputs(sinks)
-If you want to hide one or more outputs(sinks) from your menu you can do so by calling the script with the **`-exclude 46,67,63`** flag followed by a comma seperated list of sink id's to hide.
+If you want to hide one or more outputs(sinks) from your menu you can do so by calling the script with the **`-exclude`** flag followed by a comma seperated list of sink id's to hide.
 Show all sinks and their id's:
 ```sh
 wpctl status
@@ -83,13 +83,17 @@ Audio
  │  
 ```
 Then use the id's you want to hide and include them when calling the script:<br/>
-**`~/scripts/sinkswitch.sh -exclude 46,63`**
+Example: **`~/scripts/sinkswitch.sh -exclude 46,63`**
 
-## Rename outputs (sinks)
-If you hate the often weird and generic names a sink has, you can do this by using a wireplumber rule to change the node.description.
+<br/>
+
+## :abc: Rename outputs (sinks)
+If you hate the often weird and generic names a sink has, you can do this by using a wireplumber rule to change the **`node.description`**.
 Make a new file named like this in the following directory:
+
 **`/home/username/.config/wireplumber/wireplumber.conf.d/50-rename-outputs.conf`**
-Example:
+
+**Example `50-rename-outputs.conf`:**
 ```
 monitor.alsa.rules = [
   {
