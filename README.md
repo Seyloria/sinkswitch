@@ -1,4 +1,5 @@
-# sinkswitch
+# sinkswitch for Hyprland and others scratchpad users
+![Showcase](/example.jpg)
 
 ## Description
 The tool shows a little menu to switch between your pipewire audio outputs(sinks). It was written with Hyprland and it's specialworkplaces (aka scratchpad's) in mind, but should be useable with any other compositor that got a scratchpad feature like Sway etc.
