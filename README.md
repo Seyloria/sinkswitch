@@ -148,6 +148,10 @@ pw-cli list-objects Node
 
 - [x] 2025-12-28 | v1.0 | Upload the script and create a suitable README
 
+
+## :sparkling_heart: Thank you
+Thank's go out to [Sebastiaan76](https://github.com/Sebastiaan76) and his work on [waybar_wireplumber_audio_changer](https://github.com/Sebastiaan76/waybar_wireplumber_audio_changer) for the idea.
+
 ### :cyclone: Disclamer
 
 > **This is a private project and i am not a developer. I am only sharing this because it might help others. If you want to fork it, go ahead! If you find any errors or got suggestions, please let me know!**
