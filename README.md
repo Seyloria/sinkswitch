@@ -1,5 +1,5 @@
 # sinkswitch
-### Pipewire/Wireplumber output swichter for Hyprland (and others scratchpad users)
+### Pipewire/Wireplumber output swichter for Scratchpads in [Hyprland](https://hypr.land/) and other WM's with scratchpad support.
 ![Showcase](/example.jpg)
 
 ## :beginner: Description
