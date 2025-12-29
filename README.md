@@ -38,6 +38,13 @@ chmod +x sinkswitch.sh
 ### hyprland.conf
 Add this windowrule to your **`hyprland.conf`**. Tweak the **monitor**, **move** coordinates and **size** to adjust the displayed scratchpad to fit your needs.
 This example uses a 3440x1440px monitor and scratchpad size only needs to fit 3 menu entries. The menu is spawned in the top right of the screen.
+
+### Hyprland since v0.53.0
+```
+windowrule = match:class kitty-sinkswitch, monitor DP-1, float on, move 2936 64, size 480 160
+```
+
+### Hyprland till v0.52.2
 ```
 windowrule = monitor DP-1, float, move 2936 64, size 480 160, class:kitty-sinkswitch
 ```
