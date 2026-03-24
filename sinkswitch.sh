@@ -1,20 +1,7 @@
 #!/usr/bin/env bash
 
-# Version 1.2
+# Version 1.3
 # written by Seyloria
-
-### INFO ###
-# You can launch the script with "-exclude" flag, followed by a comma
-# seperated list of sink id's you want to hide in the menu
-# Example:
-# ~/myscripts/sinkswitch.sh -exclude 46,63,57
-
-# Catches sink ID's to exclude
-
-# Launch with "--sync" to force active streams to migrate immediately
-
-# Launch with "--notify" to send a notification on sink change (uses notify-send) or "--notify-hypr" to use hyprland's built in notification system 
-
 
 exclude_ids=()
 
@@ -23,24 +10,64 @@ notify_mode="none"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    -h|-help)
+      cat << EOF
+USAGE:
+  $(basename "$0") [OPTIONS]
+
+OPTIONS:
+  -h, -help             Show this help menu
+  
+  -exclude <ids>         Hide specific device IDs (comma-separated).
+                         Run 'wpctl status' to find the IDs to hide.
+                         Example: $(basename "$0") -exclude 45,60
+                         
+  -sync                 Migrate active audio streams (Spotify, Browser, etc.)
+                         to the new device immediately.
+                         
+  -notify               Send notification using notify-send (Libnotify).
+  
+  -notify-hypr          Send notification using hyprctl (Hyprland Native).
+
+EXAMPLES:
+  # Open selection menu
+  $ $(basename "$0")
+  
+  # Exclude specific devices and send notification
+  $ $(basename "$0") -exclude 3,5 -notify
+  
+  # Change sink and migrate streams with Hyprland alert
+  $ $(basename "$0") -sync -notify-hypr
+
+EOF
+      exit 0
+      ;;
     -exclude)
+      if [[ -z "$2" || "$2" == -* ]]; then
+        echo "Error: The -exclude option requires a list of IDs"
+        echo "Tip: Run 'wpctl status' to see the IDs"
+        echo "Example: $(basename "$0") -exclude 45,60"
+        exit 1
+      fi
       IFS=',' read -ra exclude_ids <<< "$2"
       shift 2
       ;;
-    --sync)
+    -sync)
       sync_active=true
       shift
       ;;
-    --notify)
+    -notify)
       notify_mode="normal"
       shift
       ;;
-    --notify-hypr)
+    -notify-hypr)
       notify_mode="hyprland"
       shift
       ;;
     *)
-      shift
+      echo "Error: Unknown option '$1'"
+      echo "Use '$(basename "$0") -help' to see available options"
+      exit 1
       ;;
   esac
 done
