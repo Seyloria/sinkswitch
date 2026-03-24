@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Version 1.1
+# Version 1.2
 # written by Seyloria
 
 ### INFO ###
@@ -13,9 +13,13 @@
 
 # Launch with "--sync" to force active streams to migrate immediately
 
+# Launch with "--notify" to send a notification on sink change (uses notify-send) or "--notify-hypr" to use hyprland's built in notification system 
+
+
 exclude_ids=()
 
 sync_active=false
+notify_mode="none"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -25,6 +29,14 @@ while [[ $# -gt 0 ]]; do
       ;;
     --sync)
       sync_active=true
+      shift
+      ;;
+    --notify)
+      notify_mode="normal"
+      shift
+      ;;
+    --notify-hypr)
+      notify_mode="hyprland"
       shift
       ;;
     *)
@@ -40,6 +52,15 @@ sync_active_streams() {
             wpctl set-id "$stream_id" "$target_id" 2>/dev/null
         fi
     done
+}
+
+send_notification() {
+    local message="$1"
+    if [[ "$notify_mode" == "hyprland" ]]; then
+        hyprctl notify 1 3500 "rgb(89b4fa)" " Sink Switcher: $message"
+    elif [[ "$notify_mode" == "normal" ]]; then
+        notify-send "Sink Switcher" "$message" --urgency=low --expire-time=2000 -i audio-speakers-symbolic 2>/dev/null
+    fi
 }
 
 is_excluded() {
@@ -118,3 +139,6 @@ if [ "$sync_active" = true ]; then
     sync_active_streams "$new_default"
 fi
 
+if [[ "$notify_mode" != "none" ]]; then
+    send_notification "Default audio output switched to: ${sinks[$new_default]}"
+fi
