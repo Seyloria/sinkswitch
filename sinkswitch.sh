@@ -1,30 +1,103 @@
 #!/usr/bin/env bash
 
-# Version 1.0
+# Version 1.4
 # written by Seyloria
 
-### INFO ###
-# You can launch the script with "-exclude" flag, followed by a comma
-# seperated list of sink id's you want to hide in the menu
-# Example:
-# ~/myscripts/sinkswitch.sh -exclude 46,63,57
-
-# Catches sink ID's to exclude
 exclude_ids=()
+
+sync_active=false
+notify_mode="none"
+wpctl_options=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    -h|-help)
+      cat << EOF
+USAGE:
+  $(basename "$0") [OPTIONS]
+
+OPTIONS:
+  -h, -help             Show this help menu
+  
+  -exclude <ids>         Hide specific device IDs (comma-separated).
+                         Run 'wpctl status' to find the IDs to hide.
+                         Example: $(basename "$0") -exclude 45,60
+  
+  -nick                 Show sink nicknames instead of descriptions.
+                         Adds --nick flag to wpctl status.
+                         
+  -sync                 Migrate active audio streams (Spotify, Browser, etc.)
+                         to the new device immediately.
+                         
+  -notify               Send notification using notify-send (Libnotify).
+  
+  -notify-hypr          Send notification using hyprctl (Hyprland Native).
+
+EXAMPLES:
+  # Open selection menu
+  $ $(basename "$0")
+  
+  # Exclude specific devices and send notification
+  $ $(basename "$0") -exclude 3,5 -notify
+  
+  # Change sink and migrate streams with Hyprland alert
+  $ $(basename "$0") -sync -notify-hypr
+
+EOF
+      exit 0
+      ;;
     -exclude)
+      if [[ -z "$2" || "$2" == -* ]]; then
+        echo "Error: The -exclude option requires a list of IDs"
+        echo "Tip: Run 'wpctl status' to see the IDs"
+        echo "Example: $(basename "$0") -exclude 45,60"
+        exit 1
+      fi
       IFS=',' read -ra exclude_ids <<< "$2"
       shift 2
       ;;
-    *)
+    -sync)
+      sync_active=true
       shift
+      ;;
+    -notify)
+      notify_mode="normal"
+      shift
+      ;;
+    -notify-hypr)
+      notify_mode="hyprland"
+      shift
+      ;;
+    -nick)
+      wpctl_options="--nick"
+      shift
+      ;;
+    *)
+      echo "Error: Unknown option '$1'"
+      echo "Use '$(basename "$0") -help' to see available options"
+      exit 1
       ;;
   esac
 done
 
-# Returns 0 (true) if the given sink ID is in the exclude list
+sync_active_streams() {
+    local target_id="$1"
+    wpctl status $wpctl_options | sed -n '/Streams:/,$p' | grep -E '[0-9]+\.' | awk -F'.' '{print $1}' | tr -d '[:space:]' | while read -r stream_id; do
+        if [[ -n "$stream_id" ]]; then
+            wpctl set-id "$stream_id" "$target_id" 2>/dev/null
+        fi
+    done
+}
+
+send_notification() {
+    local message="$1"
+    if [[ "$notify_mode" == "hyprland" ]]; then
+        hyprctl notify 1 3500 "rgb(89b4fa)" " Sink Switcher: $message"
+    elif [[ "$notify_mode" == "normal" ]]; then
+        notify-send "Sink Switcher" "$message" --urgency=low --expire-time=2000 -i audio-speakers-symbolic 2>/dev/null
+    fi
+}
+
 is_excluded() {
   local id="$1"
   for x in "${exclude_ids[@]}"; do
@@ -54,7 +127,7 @@ while IFS= read -r line; do
             default_sink="$id"
         fi
     fi
-done < <(wpctl status |
+done < <(wpctl status $wpctl_options |
 sed -n '
   /^Audio$/,/^[A-Z]/ {
     /^[[:space:]]*├─ Sinks:/ {
@@ -96,3 +169,11 @@ new_default="${selected%%|*}"
 
 # Set new default sink
 wpctl set-default "$new_default"
+
+if [ "$sync_active" = true ]; then
+    sync_active_streams "$new_default"
+fi
+
+if [[ "$notify_mode" != "none" ]]; then
+    send_notification "Default audio output switched to: ${sinks[$new_default]}"
+fi

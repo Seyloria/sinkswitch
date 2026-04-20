@@ -75,6 +75,41 @@ Example:
 ```
 <br/>
 
+## Command-line Options
+
+All available options and flags:
+
+| Option | Description |
+|--------|-------------|
+| `-h` | Show the help menu with all available options |
+| `-exclude <ids>` | Hide device IDs from the menu (comma-separated list). Run `wpctl status` to find IDs. |
+| `-nick` | Show sink nicknames instead of descriptions (adds `--nick` flag to wpctl) |
+| `-sync` | Migrate active audio streams to the newly selected sink immediately |
+| `-notify` | Send a desktop notification (using notify-send) when sink changes |
+| `-notify-hypr` | Send a Hyprland native notification (using hyprctl) when sink changes |
+
+### Examples:
+```sh
+# Show help menu
+sinkswitch -h
+
+# Create a menu with excluded sinks and send notification
+sinkswitch -exclude 46,63 -notify
+
+# Display sinks with nicknames
+sinkswitch -nick
+
+# Switch sink and migrate active streams
+sinkswitch -sync
+
+# Use Hyprland notification
+sinkswitch -notify-hypr
+
+# Combine multiple options
+sinkswitch -exclude 45,60 -sync -notify-hypr -nick
+```
+
+
 ## :no_entry_sign: Exclude/Hide certain outputs(sinks)
 If you want to hide one or more outputs(sinks) from your menu, you can do so by calling the script with the **`-exclude`** flag, followed by a comma seperated list of sink id's to hide.
 Show all sinks and their id's:
@@ -165,6 +200,10 @@ monitor.alsa.rules = [
 
 ## :scroll: Changelog and current state (yyyy-mm-dd)
 
+- [x] 2026-03-24 | v1.4 | Adds -nick parameter to display sink nicknames
+- [x] 2026-03-24 | v1.3 | Improves CLI usability with help menu and better argument handling
+- [x] 2026-03-24 | v1.2 | Adds notification support for sink switching (notify-send and Hyprland)
+- [x] 2026-03-23 | v1.1 | Adds option to sync active streams when switching sink
 - [x] 2025-12-28 | v1.0 | Upload the script and create a suitable README
 
 
