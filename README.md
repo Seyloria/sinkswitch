@@ -75,7 +75,7 @@ Example:
 ```
 <br/>
 
-## Command-line Options
+## :triangular_flag_on_post: Command-line Options
 
 All available options and flags:
 
@@ -83,7 +83,7 @@ All available options and flags:
 |--------|-------------|
 | `-h` | Show the help menu with all available options |
 | `-exclude <ids>` | Hide device IDs from the menu (comma-separated list). Run `wpctl status` to find IDs. |
-| `-nick` | Show sink nicknames instead of descriptions (adds `--nick` flag to wpctl) |
+| `-nick` | Show sink nicknames instead of descriptions (adds `--nick` flag to wpctl)<br>For advanced renaming see the [Rename outputs (sinks)](#abc-rename-outputs-sinks) segment |
 | `-sync` | Migrate active audio streams to the newly selected sink immediately |
 | `-notify` | Send a desktop notification (using notify-send) when sink changes |
 | `-notify-hypr` | Send a Hyprland native notification (using hyprctl) when sink changes |
@@ -138,17 +138,16 @@ Example: **`~/scripts/sinkswitch.sh -exclude 46,63`**
 <br/>
 
 ## :abc: Rename outputs (sinks)
-If you hate the often weird and generic names a sink has, you can do this by using a wireplumber rule to change the **`node.description`**.
+If you are not happy with the default sink names and the **`-nick`** flag doesn't please you either, you can change the sink name by using a wireplumber rule. This changes the **`node.description`**, so no need for the **`-nick`** flag this way.
 Make a new file named like this in the following directory:
 
 **`/home/username/.config/wireplumber/wireplumber.conf.d/50-rename-outputs.conf`**
-
-**Reboot** or use **`systemctl --user restart wireplumber`** to apply the changes.
 
 You can get the **`node.name`** and current **`node.description`** with
 ```sh
 pw-cli list-objects Node
 ```
+After editing use **`systemctl --user restart wireplumber`**(for systemd users, others know their way) or just **reboot the system** to apply the changes.
 
 **Example `50-rename-outputs.conf`:**
 ```
