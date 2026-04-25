@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Version 1.4
+# Version 1.5
 # written by Seyloria
 
 exclude_ids=()
@@ -8,30 +8,63 @@ exclude_ids=()
 sync_active=false
 notify_mode="none"
 wpctl_options=""
+pcolor="cyan"
+scolor="red"
+dflag="▶" # Default flag marker with stable size, that don't break alignment.
+valid_colors=(black red green yellow blue magenta cyan white)
+example_markers=(⟫ ■ ★ ⦿ ✪ ▶ ⋙ ⤐ ⋗ ⸭ ✠ ※)
+
+banner=$(cat <<'EOF'
+
+ ▄▄▄▄ ▄▄ ▄▄  ▄▄ ▄▄ ▄▄  ▄▄▄▄ ▄▄   ▄▄ ▄▄ ▄▄▄▄▄▄ ▄▄▄▄ ▄▄ ▄▄ 
+███▄▄ ██ ███▄██ ██▄█▀ ███▄▄ ██ ▄ ██ ██   ██  ██▀▀▀ ██▄██ 
+▄▄██▀ ██ ██ ▀██ ██ ██ ▄▄██▀  ▀█▀█▀  ██   ██  ▀████ ██ ██ 
+
+EOF
+)
+
+is_valid_color() {
+  local c="$1"
+  for v in "${valid_colors[@]}"; do
+    [[ "$c" == "$v" ]] && return 0
+  done
+  return 1
+}
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|-help)
+      echo -e "\033[35m$banner\033[0m"
       cat << EOF
+
 USAGE:
   $(basename "$0") [OPTIONS]
 
 OPTIONS:
-  -h, -help             Show this help menu
-  
-  -exclude <ids>         Hide specific device IDs (comma-separated).
-                         Run 'wpctl status' to find the IDs to hide.
-                         Example: $(basename "$0") -exclude 45,60
-  
-  -nick                 Show sink nicknames instead of descriptions.
-                         Adds --nick flag to wpctl status.
+  -h, -help                    Show this help menu
                          
-  -sync                 Migrate active audio streams (Spotify, Browser, etc.)
-                         to the new device immediately.
+  -color-prompt <color>        Choose what color your prompt(header) should have
+                                Valid colors are: ${valid_colors[*]}
+
+  -color-selection <color>     Choose what color your selection should have
+                                Valid colors are: ${valid_colors[*]}
+
+  -dflag <marker/symbol>       Choose a fixed-width marker/symbol for the current default sink
+                                Example: $(basename "$0") -dflag ${example_markers[8]}
+
+  -exclude <ids>               Hide specific device IDs (comma-separated).
+                                Run 'wpctl status' to find the IDs to hide.
+                                Example: $(basename "$0") -exclude 45,60
+
+  -nick                        Show sink nicknames instead of descriptions.
+                                Adds --nick flag to wpctl status.
                          
-  -notify               Send notification using notify-send (Libnotify).
+  -notify                      Send notification using notify-send (Libnotify).
   
-  -notify-hypr          Send notification using hyprctl (Hyprland Native).
+  -notify-hypr                 Send notification using hyprctl (Hyprland Native).
+
+  -sync                        Migrate active audio streams (Spotify, Browser, etc.)
+                                to the new device immediately.
 
 EXAMPLES:
   # Open selection menu
@@ -42,6 +75,12 @@ EXAMPLES:
   
   # Change sink and migrate streams with Hyprland alert
   $ $(basename "$0") -sync -notify-hypr
+
+  # Change prompt and selection color, when using nicks as output names
+  $ $(basename "$0") -color-prompt green -color-selection magenta -nick
+
+  # Change prompt color and default sink marker/symbol
+  $ $(basename "$0") -color-prompt  magenta -dflag ⋗
 
 EOF
       exit 0
@@ -71,6 +110,47 @@ EOF
     -nick)
       wpctl_options="--nick"
       shift
+      ;;
+    -color-selection)
+      if [[ -z "$2" || "$2" == -* ]]; then
+        echo "Error: -selection requires a color"
+        echo "Available colors: ${valid_colors[*]}"
+        exit 1
+      fi
+
+      if ! is_valid_color "$2"; then
+        echo "Error: Invalid color '$2'"
+        echo "Available colors: ${valid_colors[*]}"
+        exit 1
+      fi
+
+      scolor="$2"
+      shift 2
+      ;;
+    -color-prompt)
+      if [[ -z "$2" || "$2" == -* ]]; then
+        echo "Error: -prompt requires a color"
+        echo "Available colors: ${valid_colors[*]}"
+        exit 1
+      fi
+      
+      if ! is_valid_color "$2"; then
+        echo "Error: Invalid color '$2'"
+        echo "Available colors: ${valid_colors[*]}"
+        exit 1
+      fi
+
+      pcolor="$2"
+      shift 2
+      ;;
+    -dflag)
+      if [[ -z "$2" || "$2" == -* ]]; then
+        echo "Error: -dflag requires a fixed-width marker/symbol"
+        echo "Examples: ${example_markers[*]}"
+        exit 1
+      fi
+      dflag="$2"
+      shift 2
       ;;
     *)
       echo "Error: Unknown option '$1'"
@@ -140,24 +220,27 @@ sed -n '
   }
 ')
 
-# Builds the fzf selection
+# Builds the fzf selection (stable sorted version)
 fzf_input=()
-for id in $(for i in "${!sinks[@]}"; do
-              printf "%s\t%s\n" "$i" "${sinks[$i]}"
-           done | sort -k2 | cut -f1); do
+
+while IFS=$'\t' read -r id name; do
     is_excluded "$id" && continue
 
     flag=" "
-    [[ "$id" == "$default_sink" ]] && flag="▶"
+    [[ "$id" == "$default_sink" ]] && flag="${dflag}"
 
-    fzf_input+=("$id|$flag | ${sinks[$id]}")
-done
+    fzf_input+=("$id|$flag | $name")
+done < <(
+  for i in "${!sinks[@]}"; do
+    printf "%s\t%s\t%s\n" "$i" "${sinks[$i]}" "${sinks[$i]//[^[:alnum:] ]/}"
+  done | LC_ALL=C sort -t$'\t' -k3,3 | cut -f1-2
+)
 
 # Displays the fzf menu
 selected=$(printf '%s\n' "${fzf_input[@]}" | fzf \
   --delimiter='|' \
   --with-nth=2.. \
-  --color="header:green,prompt:green,fg+:magenta:bold" \
+  --color="prompt:${pcolor},fg+:${scolor}:bold" \
   --prompt="  (✿◠‿◠) Select Your Audio Output (◕‿◕✿)" \
   --no-preview --disabled --layout=reverse --border=none --no-info \
   --bind "change:clear-query")
