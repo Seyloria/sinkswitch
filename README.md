@@ -82,6 +82,9 @@ All available options and flags:
 | Option | Description |
 |--------|-------------|
 | `-h` | Show the help menu with all available options |
+| `--color-prompt` | Choose what color your prompt(header) should have |
+| `--color-selection` | Choose what color your selection should have |
+| `--dflag` | Choose a fixed-width marker/symbol for the current default sink |
 | `-exclude <ids>` | Hide device IDs from the menu (comma-separated list). Run `wpctl status` to find IDs. |
 | `-nick` | Show sink nicknames instead of descriptions (adds `--nick` flag to wpctl)<br>For advanced renaming see the [Rename outputs (sinks)](#abc-rename-outputs-sinks) segment |
 | `-sync` | Migrate active audio streams to the newly selected sink immediately |
@@ -92,6 +95,15 @@ All available options and flags:
 ```sh
 # Show help menu
 sinkswitch -h
+
+# Choose what color your prompt(header) should have
+sinkswitch -color-prompt red
+
+# Choose what color your selection should have
+sinkswitch -color-selection cyan
+
+# Choose a fixed-width marker/symbol for the current default sink
+sinkswitch -dflag ⋗
 
 # Create a menu with excluded sinks and send notification
 sinkswitch -exclude 46,63 -notify
@@ -106,7 +118,7 @@ sinkswitch -sync
 sinkswitch -notify-hypr
 
 # Combine multiple options
-sinkswitch -exclude 45,60 -sync -notify-hypr -nick
+sinkswitch -exclude 45,60 -sync -notify-hypr -nick -dflag ⦿
 ```
 
 
@@ -199,6 +211,7 @@ monitor.alsa.rules = [
 
 ## :scroll: Changelog and current state (yyyy-mm-dd)
 
+- [x] 2026-04-25 | v1.5 | Adds -dflag, color-prompt & color-selection parameter to rice your menu
 - [x] 2026-03-24 | v1.4 | Adds -nick parameter to display sink nicknames
 - [x] 2026-03-24 | v1.3 | Improves CLI usability with help menu and better argument handling
 - [x] 2026-03-24 | v1.2 | Adds notification support for sink switching (notify-send and Hyprland)
