@@ -211,6 +211,7 @@ monitor.alsa.rules = [
 
 ## :scroll: Changelog and current state (yyyy-mm-dd)
 
+- [x] 2026-04-25 | v1.6 | Added project info to the help flag
 - [x] 2026-04-25 | v1.5 | Adds -dflag, color-prompt & color-selection parameter to rice your menu
 - [x] 2026-03-24 | v1.4 | Adds -nick parameter to display sink nicknames
 - [x] 2026-03-24 | v1.3 | Improves CLI usability with help menu and better argument handling
