@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Version 1.5
+# Version 1.6
 # written by Seyloria
 
 exclude_ids=()
@@ -19,7 +19,6 @@ banner=$(cat <<'EOF'
  ▄▄▄▄ ▄▄ ▄▄  ▄▄ ▄▄ ▄▄  ▄▄▄▄ ▄▄   ▄▄ ▄▄ ▄▄▄▄▄▄ ▄▄▄▄ ▄▄ ▄▄ 
 ███▄▄ ██ ███▄██ ██▄█▀ ███▄▄ ██ ▄ ██ ██   ██  ██▀▀▀ ██▄██ 
 ▄▄██▀ ██ ██ ▀██ ██ ██ ▄▄██▀  ▀█▀█▀  ██   ██  ▀████ ██ ██ 
-
 EOF
 )
 
@@ -34,7 +33,9 @@ is_valid_color() {
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|-help)
-      echo -e "\033[35m$banner\033[0m"
+      echo -e "\033[35m$banner\033[0m\n"
+      echo -e "\033[32mVersion 1.6 | written by Seyloria and contributer AlejandroMinor\033[0m"
+      echo -e "\033[32mProject: https://github.com/Seyloria/sinkswitch\033[0m"
       cat << EOF
 
 USAGE:
