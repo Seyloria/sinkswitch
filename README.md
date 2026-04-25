@@ -80,16 +80,16 @@ Example:
 All available options and flags:
 
 | Option | Description |
-|--------|-------------|
-| `-h` | Show the help menu with all available options |
-| `--color-prompt` | Choose what color your prompt(header) should have |
-| `--color-selection` | Choose what color your selection should have |
-| `--dflag` | Choose a fixed-width marker/symbol for the current default sink |
-| `-exclude <ids>` | Hide device IDs from the menu (comma-separated list). Run `wpctl status` to find IDs. |
-| `-nick` | Show sink nicknames instead of descriptions (adds `--nick` flag to wpctl)<br>For advanced renaming see the [Rename outputs (sinks)](#abc-rename-outputs-sinks) segment |
-| `-sync` | Migrate active audio streams to the newly selected sink immediately |
-| `-notify` | Send a desktop notification (using notify-send) when sink changes |
-| `-notify-hypr` | Send a Hyprland native notification (using hyprctl) when sink changes |
+|------------------|-------------|
+| **-h** | Show the help menu with all available options |
+| **-color-prompt <color>** | Choose what color your prompt(header) should have |
+| **-color-selection <color>** | Choose what color your selection should have |
+| **-dflag <marker/symbol>** | Choose a fixed-width marker/symbol for the current default sink |
+| **-exclude <ids>** | Hide device IDs from the menu (comma-separated list). Run `wpctl status` to find IDs. |
+| **-nick** | Show sink nicknames instead of descriptions (adds `--nick` flag to wpctl)<br>For advanced renaming see the [Rename outputs (sinks)](#abc-rename-outputs-sinks) segment |
+| **-sync** | Migrate active audio streams to the newly selected sink immediately |
+| **-notify** | Send a desktop notification (using notify-send) when sink changes |
+| **-notify-hypr** | Send a Hyprland native notification (using hyprctl) when sink changes |
 
 ### Examples:
 ```sh
@@ -103,7 +103,7 @@ sinkswitch -color-prompt red
 sinkswitch -color-selection cyan
 
 # Choose a fixed-width marker/symbol for the current default sink
-sinkswitch -dflag ⋗
+sinkswitch -dflag ◆  
 
 # Create a menu with excluded sinks and send notification
 sinkswitch -exclude 46,63 -notify
