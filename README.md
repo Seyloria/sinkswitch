@@ -35,11 +35,59 @@ chmod +x sinkswitch.sh
 
 ## :link: Scratchpad Config
 
+### hyprland.lua
+Add this windowrule to your **`hyprland.lua`**. Tweak the **monitor**, **move** coordinates and **size** to adjust the displayed scratchpad to fit your needs.
+This example uses a 3440x1440px monitor and scratchpad size is tailored to fit 3 entries. The menu is spawned in the top right of the screen.
+
+### Hyprland since v0.55.0 = lua
+```lua
+hl.window_rule({
+    name = "scratchpad-kitty-sinkswitch",
+    match = { class = "kitty-sinkswitch" },
+    monitor = "DP-1",
+    float = true,
+    move = "2936 72",
+    size = "480 140",
+})
+```
+
+### Keybinding Example since v0.55.00
+This example uses an extra macro key on the keyboard, but you can assign it to any key of your choosing.
+```
+hl.bind("XF86Tools", hl.dsp.exec_cmd(
+    "kitty --class kitty-sinkswitch -e ~/scripts/sinkswitch.sh -color-prompt red -color-selection green -dflag ✠",
+    { workspace = "special:sinkswitch" }
+```
+
+### Waybar Integration
+If you want to use a button on your waybar(e.g. from your volume control) to open the menu, this can easily be done by executing the script with **`hyprctl dispatch`**.
+
+Example:
+```jsonc
+"pulseaudio": {
+        "format": "{icon}   {volume}%",
+        "tooltip": false,
+        "format-muted": " Muted",
+        "on-click": "hyprctl dispatch 'hl.dsp.exec_cmd(\"kitty --class kitty-sinkswitch -e ~/scripts/sinkswitch.sh -color-prompt red -color-selection green -dflag ✠\", { workspace = \"special:sinkswitch\" })'",
+        "on-scroll-up": "pamixer -i 5",
+        "on-scroll-down": "pamixer -d 5",
+        "scroll-step": 5,
+        "max-length": 10,
+        "states": {
+        		"low!": 30,
+        		"critical!": 15
+        },
+},
+```
+
+<details>
+<summary>Click to see old pre v0.55.0 Hyprland config</summary>
+
 ### hyprland.conf
 Add this windowrule to your **`hyprland.conf`**. Tweak the **monitor**, **move** coordinates and **size** to adjust the displayed scratchpad to fit your needs.
-This example uses a 3440x1440px monitor and scratchpad size only needs to fit 3 menu entries. The menu is spawned in the top right of the screen.
-
-### Hyprland since v0.53.0
+This example uses a 3440x1440px monitor and scratchpad size is tailored to fit 3 entries. The menu is spawned in the top right of the screen.
+        
+### Hyprland v0.53.0 - v0.54.0
 ```
 windowrule = match:class kitty-sinkswitch, monitor DP-1, float on, move 2936 64, size 480 160
 ```
@@ -48,7 +96,7 @@ windowrule = match:class kitty-sinkswitch, monitor DP-1, float on, move 2936 64,
 ```
 windowrule = monitor DP-1, float, move 2936 64, size 480 160, class:kitty-sinkswitch
 ```
-### Keybinding
+### Keybinding Example old syntax pre v0.55.00
 This example uses an extra macro key on the keyboard, but you can assign it to any key of your choosing.
 ```
 bind = , XF86Tools, exec, [workspace special:sinkswitch] kitty --class kitty-sinkswitch -e ~/scripts/sinkswitch.sh -exclude 46
@@ -73,6 +121,8 @@ Example:
         },
 },
 ```
+
+</details>
 <br/>
 
 ## :triangular_flag_on_post: Command-line Options
@@ -211,6 +261,7 @@ monitor.alsa.rules = [
 
 ## :scroll: Changelog and current state (yyyy-mm-dd)
 
+- [x] 2026-09-05 | v1.6 | Readme updated for the current hyprland lua syntax
 - [x] 2026-04-25 | v1.6 | Added project info to the help flag
 - [x] 2026-04-25 | v1.5 | Adds -dflag, color-prompt & color-selection parameter to rice your menu
 - [x] 2026-03-24 | v1.4 | Adds -nick parameter to display sink nicknames
