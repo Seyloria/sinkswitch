@@ -50,6 +50,7 @@ OPTIONS:
                                 Valid colors are: ${valid_colors[*]}
 
   -dflag <marker/symbol>       Choose a fixed-width marker/symbol for the current default sink
+                                Example markers/symbols: ${example_markers[*]}
                                 Example: $(basename "$0") -dflag ${example_markers[8]}
 
   -exclude <ids>               Hide specific device IDs (comma-separated).
